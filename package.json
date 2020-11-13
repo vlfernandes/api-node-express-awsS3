@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "aws-sdk": "^2.786.0",
+    "axios": "^0.21.0",
     "body-parser": "^1.18.3",
     "express": "^4.15.4",
+    "express-basic-auth": "^1.2.0",
     "mongoose": "^5.0.16",
     "redis": "^2.8.0"
   },
