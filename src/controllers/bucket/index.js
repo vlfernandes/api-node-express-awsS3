@@ -1,11 +1,11 @@
 const libFunctions = require('./lib')
 
-exports.createBucket = async (req, res, next) => {
-    await libFunctions.createMyBucket(req.params.bucketName)
-    res.status(201).send('Finalizado');
+exports.create = async (req, res, next) => {
+    const response = await libFunctions.createBucket(req.params.bucketName)
+    res.status(response.statusCode).send(response.res);
 };
 
-exports.deleteBucket = async (req, res, next) => {
-    await libFunctions.deleteMyBucket(req.params.bucketName)
-    res.status(201).send('Finalizado');
+exports.delete = async (req, res, next) => {
+    const response = await libFunctions.deleteBucket(req.params.bucketName)
+    res.status(response.statusCode).send(response.res);
 };

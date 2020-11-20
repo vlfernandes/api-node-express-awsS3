@@ -1,22 +1,53 @@
-var { functionRetornoRota } = require('../../../../functions');
 var { s3 } = require('../../../../config');
 
 
-createMyBucket = (bucketName) => {
-    let bucket_params = {
-        Bucket: bucketName
-    };
-    s3.createBucket(bucket_params, functionRetornoRota);
+createBucket = (bucketName) => {
+    return new Promise((resolve, reject) => {
+        let bucket_params = {
+            Bucket: bucketName
+        };
+        s3.createBucket(bucket_params, (err, data) => {
+            if (err) {
+                resolve({
+                    statusCode: 400,
+                    res: `O bucket '${bucketName}' ja existe. Altere o nome e tente novamente.`
+                })
+            }
+            else {
+                resolve({
+                    statusCode: 201,
+                    res: `Bucket '${data.Location}' criado com sucesso`
+                })
+            }
+        });
+    })
 }
 
-deleteMyBucket = (bucketName) => {
-    let bucket_params = {
-        Bucket: bucketName
-    };
-    s3.deleteBucket(bucket_params, functionRetornoRota);
+deleteBucket = (bucketName) => {
+    return new Promise((resolve, reject) => {
+        let bucket_params = {
+            Bucket: bucketName
+        };
+        s3.deleteBucket(bucket_params, (err, data) => {
+            if (err) {
+                console.log(err, err.stack);
+                resolve({
+                    statusCode: 400,
+                    res: `O bucket '${bucketName}' não existe.`
+                })
+            }
+            else {
+                console.log(data);
+                resolve({
+                    statusCode: 201,
+                    res: `Bucket '${bucketName}' deletado com sucesso`
+                })
+            }
+        });
+    })
 }
 
 module.exports = {
-    createMyBucket,
-    deleteMyBucket
+    createBucket,
+    deleteBucket
 }

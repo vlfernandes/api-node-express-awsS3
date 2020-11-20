@@ -4,11 +4,8 @@ const bodyParser = require('body-parser');
 const basicAuth = require('express-basic-auth')
 const { functionAuthNaoAutorizado } = require('../functions')
 
-//Rotas
-const index = require('./routes/index');
-const fileRoute = require('./routes/file');
-const bucketRoute = require('./routes/bucket');
 
+//Config
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(basicAuth({
@@ -16,7 +13,12 @@ app.use(basicAuth({
     unauthorizedResponse: functionAuthNaoAutorizado
 }))
 
+//Rotas
+const index = require('./routes/index');
+const fileRoute = require('./routes/file');
+const bucketRoute = require('./routes/bucket');
 
+//Init rotas
 app.use('/', index);
 app.use('/file', fileRoute);
 app.use('/bucket', bucketRoute);
