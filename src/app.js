@@ -19,12 +19,10 @@ app.use(fileUpload({
 
 //Rotas
 const index = require('./routes/index');
-const fileRoute = require('./routes/file');
 const bucketRoute = require('./routes/bucket');
 
 //Init rotas
 app.use('/', index);
-app.use('/file', fileRoute);
 app.use('/bucket', bucketRoute);
 
 module.exports = app;

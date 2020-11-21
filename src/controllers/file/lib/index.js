@@ -1,34 +1,6 @@
 var { s3 } = require('../../../../config');
 var { errorReturn } = require('../../../../lib');
 
-listFiles = ({ bucketName }) => {
-    return new Promise((resolve, reject) => {
-        if (!bucketName) {
-            resolve(errorReturn.bucketName)
-            return
-        }
-
-        let bucket_params = {
-            Bucket: bucketName
-        };
-
-        s3.listObjects(bucket_params, (err, data) => {
-            if (err) {
-                resolve({
-                    statusCode: 400,
-                    res: `Erro ao listar os arquivos.`
-                })
-            }
-            else {
-                resolve({
-                    statusCode: 200,
-                    res: `Arquivos: ${data.Contents.map(elem => `${elem.Key}`)}`
-                })
-            }
-        });
-    })
-}
-
 insertFile = ({ bucketName, keyFile }, files) => {
     return new Promise((resolve, reject) => {
         if (!bucketName) {
@@ -54,17 +26,17 @@ insertFile = ({ bucketName, keyFile }, files) => {
 
         s3.putObject(bucket_params, (err, data) => {
             if (err) {
-                console.log(err)
                 resolve({
                     statusCode: 400,
-                    res: `Erro ao inserir o arquivo.`
+                    msg: `Erro ao inserir o arquivo.`,
+                    data: err
                 })
             }
             else {
-                console.log(data)
                 resolve({
                     statusCode: 200,
-                    res: `Arquivo inserido com sucesso`
+                    msg: `Arquivo inserido com sucesso`,
+                    data
                 })
             }
         });
@@ -89,17 +61,17 @@ readFile = ({ bucketName, keyFile }) => {
 
         s3.getObject(bucket_params, (err, data) => {
             if (err) {
-                console.log(err)
                 resolve({
                     statusCode: 400,
-                    res: `Erro ao ler o arquivo.`
+                    msg: `Erro ao ler o arquivo.`,
+                    data: err
                 })
             }
             else {
-                console.log(data.Body)
                 resolve({
                     statusCode: 200,
-                    res: data.Body
+                    msg: 'Arquivo lido com sucesso',
+                    data
                 })
             }
         });
@@ -124,17 +96,17 @@ deleteFile = ({ bucketName, keyFile }) => {
 
         s3.deleteObject(bucket_params, (err, data) => {
             if (err) {
-                console.log(err)
                 resolve({
                     statusCode: 400,
-                    res: `Erro ao deletar o arquivo.`
+                    msg: `Erro ao deletar o arquivo.`,
+                    data: err
                 })
             }
             else {
-                console.log(data)
                 resolve({
                     statusCode: 200,
-                    res: `Arquivo deletado com sucesso`
+                    msg: `Arquivo deletado com sucesso`,
+                    data
                 })
             }
         });
@@ -142,7 +114,6 @@ deleteFile = ({ bucketName, keyFile }) => {
 }
 
 module.exports = {
-    listFiles,
     insertFile,
     readFile,
     deleteFile

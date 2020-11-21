@@ -16,13 +16,15 @@ createBucket = ({ bucketName }) => {
             if (err) {
                 resolve({
                     statusCode: 400,
-                    res: `O bucket '${bucketName}' ja existe. Altere o nome e tente novamente.`
+                    msg: `O bucket '${bucketName}' ja existe. Altere o nome e tente novamente.`,
+                    data: err
                 })
             }
             else {
                 resolve({
-                    statusCode: 201,
-                    res: `Bucket '${data.Location}' criado com sucesso`
+                    statusCode: 200,
+                    msg: `Bucket '${data.Location}' criado com sucesso.`,
+                    data: data.Location
                 })
             }
         });
@@ -44,13 +46,15 @@ deleteBucket = ({ bucketName }) => {
             if (err) {
                 resolve({
                     statusCode: 400,
-                    res: `O bucket '${bucketName}' não existe.`
+                    msg: `O bucket '${bucketName}' não existe.`,
+                    data: err
                 })
             }
             else {
                 resolve({
                     statusCode: 200,
-                    res: `Bucket '${bucketName}' deletado com sucesso`
+                    msg: `Bucket '${bucketName}' deletado com sucesso.`,
+                    data
                 })
             }
         });
@@ -60,18 +64,50 @@ deleteBucket = ({ bucketName }) => {
 listBuckets = () => {
     return new Promise((resolve, reject) => {
         let bucket_params = {};
-        
+
         s3.listBuckets(bucket_params, (err, data) => {
             if (err) {
                 resolve({
                     statusCode: 400,
-                    res: `Erro ao listar buckets.`
+                    msg: `Erro ao listar buckets.`,
+                    data: err
                 })
             }
             else {
                 resolve({
                     statusCode: 200,
-                    res: `Buckets: ${data.Buckets.map(elem => elem.Name)}`
+                    msg: `Buckets listados com sucesso`,
+                    data: data.Buckets
+                })
+            }
+        });
+    })
+}
+
+listBucketId = ({ bucketName }) => {
+    return new Promise((resolve, reject) => {
+        if (!bucketName) {
+            resolve(errorReturn.bucketName)
+            return
+        }
+
+        let bucket_params = {
+            Bucket: bucketName
+        };
+
+        s3.listObjects(bucket_params, (err, data) => {
+            if (err) {
+                resolve({
+                    statusCode: 400,
+                    msg: `Erro ao listar os arquivos do bucket '${bucketName}'.`,
+                    data: err
+                })
+            }
+            else {
+                resolve({
+                    statusCode: 200,
+                    msg: `Arquivos do bucket '${bucketName}' listados com sucesso`,
+                    data: data.Contents
                 })
             }
         });
@@ -81,5 +117,6 @@ listBuckets = () => {
 module.exports = {
     createBucket,
     deleteBucket,
-    listBuckets
+    listBuckets,
+    listBucketId
 }
