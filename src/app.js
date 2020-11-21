@@ -3,7 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const basicAuth = require('express-basic-auth')
 const fileUpload = require('express-fileupload');   
-const { functionAuthNaoAutorizado } = require('../functions')
+const { functionAuthNaoAutorizado } = require('../lib')
 
 
 //Config

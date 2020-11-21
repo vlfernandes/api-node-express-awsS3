@@ -14,3 +14,8 @@ exports.read = async (req, res, next) => {
     const response = await libFunctions.readFile(req.body)
     res.status(response.statusCode).send(response.res);
 };
+
+exports.delete = async (req, res, next) => {
+    const response = await libFunctions.deleteFile(req.body)
+    res.status(response.statusCode).send(response.res);
+};

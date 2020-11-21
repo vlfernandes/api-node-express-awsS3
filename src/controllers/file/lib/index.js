@@ -1,10 +1,17 @@
 var { s3 } = require('../../../../config');
+var { errorReturn } = require('../../../../lib');
 
 listFiles = ({ bucketName }) => {
     return new Promise((resolve, reject) => {
+        if (!bucketName) {
+            resolve(errorReturn.bucketName)
+            return
+        }
+
         let bucket_params = {
             Bucket: bucketName
         };
+
         s3.listObjects(bucket_params, (err, data) => {
             if (err) {
                 resolve({
@@ -13,7 +20,6 @@ listFiles = ({ bucketName }) => {
                 })
             }
             else {
-                console.log(data)
                 resolve({
                     statusCode: 200,
                     res: `Arquivos: ${data.Contents.map(elem => `${elem.Key}`)}`
@@ -26,26 +32,18 @@ listFiles = ({ bucketName }) => {
 insertFile = ({ bucketName, keyFile }, files) => {
     return new Promise((resolve, reject) => {
         if (!bucketName) {
-            resolve({
-                statusCode: 400,
-                res: `Nome do bucket não foi enviado na requisição.`
-            })
+            resolve(errorReturn.bucketName)
             return
         }
         if (!keyFile) {
-            resolve({
-                statusCode: 400,
-                res: `Chave do arquivo anão foi enviado na requisição.`
-            })
+            resolve(errorReturn.keyFile)
             return
         }
         if (!files?.file) {
-            resolve({
-                statusCode: 400,
-                res: `Arquivo não foi enviado na requisição.`
-            })
+            resolve(errorReturn.files)
             return
         }
+
         const file = files.file
 
         let bucket_params = {
@@ -53,12 +51,7 @@ insertFile = ({ bucketName, keyFile }, files) => {
             Key: keyFile,
             Body: file.data
         };
-        console.log(bucket_params)
 
-        // resolve({
-        //     statusCode: 200,
-        //     res: `Teste.`
-        // })
         s3.putObject(bucket_params, (err, data) => {
             if (err) {
                 console.log(err)
@@ -81,17 +74,11 @@ insertFile = ({ bucketName, keyFile }, files) => {
 readFile = ({ bucketName, keyFile }) => {
     return new Promise((resolve, reject) => {
         if (!bucketName) {
-            resolve({
-                statusCode: 400,
-                res: `Nome do bucket não foi enviado na requisição.`
-            })
+            resolve(errorReturn.bucketName)
             return
         }
         if (!keyFile) {
-            resolve({
-                statusCode: 400,
-                res: `Chave do arquivo anão foi enviado na requisição.`
-            })
+            resolve(errorReturn.keyFile)
             return
         }
 
@@ -119,8 +106,44 @@ readFile = ({ bucketName, keyFile }) => {
     })
 }
 
+deleteFile = ({ bucketName, keyFile }) => {
+    return new Promise((resolve, reject) => {
+        if (!bucketName) {
+            resolve(errorReturn.bucketName)
+            return
+        }
+        if (!keyFile) {
+            resolve(errorReturn.keyFile)
+            return
+        }
+
+        let bucket_params = {
+            Bucket: bucketName,
+            Key: keyFile
+        };
+
+        s3.deleteObject(bucket_params, (err, data) => {
+            if (err) {
+                console.log(err)
+                resolve({
+                    statusCode: 400,
+                    res: `Erro ao deletar o arquivo.`
+                })
+            }
+            else {
+                console.log(data)
+                resolve({
+                    statusCode: 200,
+                    res: `Arquivo deletado com sucesso`
+                })
+            }
+        });
+    })
+}
+
 module.exports = {
     listFiles,
     insertFile,
-    readFile
+    readFile,
+    deleteFile
 }
