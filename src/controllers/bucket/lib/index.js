@@ -1,7 +1,6 @@
 var { s3 } = require('../../../../config');
 
-
-createBucket = (bucketName) => {
+createBucket = ({ bucketName }) => {
     return new Promise((resolve, reject) => {
         let bucket_params = {
             Bucket: bucketName
@@ -23,7 +22,7 @@ createBucket = (bucketName) => {
     })
 }
 
-deleteBucket = (bucketName) => {
+deleteBucket = ({ bucketName }) => {
     return new Promise((resolve, reject) => {
         let bucket_params = {
             Bucket: bucketName
@@ -37,8 +36,28 @@ deleteBucket = (bucketName) => {
             }
             else {
                 resolve({
-                    statusCode: 201,
+                    statusCode: 200,
                     res: `Bucket '${bucketName}' deletado com sucesso`
+                })
+            }
+        });
+    })
+}
+
+listBuckets = () => {
+    return new Promise((resolve, reject) => {
+        let bucket_params = {};
+        s3.listBuckets(bucket_params, (err, data) => {
+            if (err) {
+                resolve({
+                    statusCode: 400,
+                    res: `Erro ao listar buckets.`
+                })
+            }
+            else {
+                resolve({
+                    statusCode: 200,
+                    res: `Buckets: ${data.Buckets.map(elem => elem.Name)}`
                 })
             }
         });
@@ -47,5 +66,6 @@ deleteBucket = (bucketName) => {
 
 module.exports = {
     createBucket,
-    deleteBucket
+    deleteBucket,
+    listBuckets
 }
