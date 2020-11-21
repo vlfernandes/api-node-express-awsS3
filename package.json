@@ -11,7 +11,9 @@
     "express-basic-auth": "^1.2.0",
     "express-fileupload": "^1.2.0",
     "mongoose": "^5.0.16",
-    "redis": "^2.8.0"
+    "redis": "^2.8.0",
+    "swagger-jsdoc": "^5.0.1",
+    "swagger-ui-express": "^4.1.5"
   },
   "devDependencies": {
     "nodemon": "^1.17.3"
