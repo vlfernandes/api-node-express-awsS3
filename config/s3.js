@@ -1,4 +1,5 @@
 var AWS = require('aws-sdk');
+require('dotenv').config();
 
 AWS.config.update({
     region: process.env.S3_REGION

@@ -30,14 +30,12 @@ deleteBucket = (bucketName) => {
         };
         s3.deleteBucket(bucket_params, (err, data) => {
             if (err) {
-                console.log(err, err.stack);
                 resolve({
                     statusCode: 400,
                     res: `O bucket '${bucketName}' não existe.`
                 })
             }
             else {
-                console.log(data);
                 resolve({
                     statusCode: 201,
                     res: `Bucket '${bucketName}' deletado com sucesso`
